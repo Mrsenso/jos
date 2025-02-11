@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="script.js" defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        .slider img {
+            width: 100%;
+            height: 400px;
+            display: none;
+        }
+        #register {
+            max-width: 500px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            
+        }
+        form label {
+            display: block;
+            margin-top: 10px;
+        }
+        form input, form select, form button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        form button {
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            margin-top: 15px;
+        }
+        form button:hover {
+            background-color: #218838;
+        }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            
+            <li><a href="#register">Register Here</a></li>
+        </ul>
+    </nav>
+    
+    <section id="home">
+        <div class="slider">
+            <img src="image1.jpg" alt="Slide 1">
+            <img src="image2.jpg" alt="Slide 2">
+            <img src="image3.jpg" alt="Slide 3">
+        </div>
+    </section>
+    
+    <section id="register">
+        <h2>User Registration</h2>
+        <form id="registrationForm">
+            <label for="fullName">Full Name:</label>
+            <input type="text" id="fullName" name="fullName" required>
+            
+            <label for="regNumber">Registration Number:</label>
+            <input type="text" id="regNumber" name="regNumber" placeholder="BCS-00-0000-0000" required>
+            
+            <label for="sex">Sex:</label>
+            <select id="sex" name="sex">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+            
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            
+            <label for="region">Region:</label>
+            <select id="region" name="region"></select>
+            
+            <label for="district">District:</label>
+            <select id="district" name="district"></select>
+            
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+            
+            <button type="submit">Register</button>
+        </form>
+    </section>
+
+    <script>
+        $(document).ready(function() {
+            // Form validation
+            $("#registrationForm").validate({
+                rules: {
+                    fullName: "required",
+                    regNumber: {
+                        required: true,
+                        pattern: /^BCS-\d{2}-\d{4}-\d{4}$/
+                    },
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: {
+                        required: true,
+                        minlength: 8
+                    },
+                    confirmPassword: {
+                        required: true,
+                        equalTo: "#password"
+                    }
+                },
+                messages: {
+                    regNumber: "Format must be BCS-00-0000-0000",
+                    confirmPassword: "Passwords must match"
+                }
+            });
+
+            // Ajax for region and district selection
+            const regions = {
+                
+    "Arusha": ["Arusha City", "Meru", "Monduli", "Arusha", "Karatu", "Longido", "Ngorongoro"],
+    "Dar es Salaam": ["Ilala", "Kinondoni", "Temeke", "Kigamboni", "Ubungo"],
+    "Dodoma": ["Dodoma City", "Bahi", "Chamwino", "Chemba", "Kondoa", "Kongwa", "Mpwapwa"],
+    "Geita": ["Geita", "Bukombe", "Chato", "Mbogwe", "Nyang'hwale"],
+    "Iringa": ["Iringa Urban", "Iringa Rural", "Kilolo", "Mafinga", "Mufindi"],
+    "Kagera": ["Bukoba Urban", "Bukoba Rural", "Karagwe", "Kyerwa", "Missenyi", "Muleba", "Ngara"],
+    "Katavi": ["Mpanda Urban", "Mpanda Rural", "Mlele"],
+    "Kigoma": ["Kigoma Urban", "Kigoma Rural", "Kasulu", "Kibondo", "Uvinza"],
+    "Kilimanjaro": ["Moshi Urban", "Moshi Rural", "Hai", "Rombo", "Mwanga", "Siha", "Same"],
+    "Lindi": ["Lindi Urban", "Lindi Rural", "Kilwa", "Liwale", "Nachingwea", "Ruangwa"],
+    "Manyara": ["Babati", "Hanang", "Kiteto", "Mbulu", "Simanjiro"],
+    "Mara": ["Musoma Urban", "Musoma Rural", "Bunda", "Butiama", "Rorya", "Serengeti", "Tarime"],
+    "Mbeya": ["Mbeya City", "Mbeya Rural", "Chunya", "Ileje", "Mbarali", "Rungwe", "Kyela"],
+    "Morogoro": ["Morogoro Urban", "Morogoro Rural", "Gairo", "Kilombero", "Kilosa", "Mvomero", "Ulanga"],
+    "Mtwara": ["Mtwara Urban", "Mtwara Rural", "Masasi", "Nanyumbu", "Newala", "Tandahimba"],
+    "Mwanza": ["Ilemela", "Nyamagana", "Buchosa", "Magu", "Misungwi", "Sengerema", "Ukerewe"],
+    "Njombe": ["Njombe Urban", "Njombe Rural", "Ludewa", "Makambako", "Wanging'ombe"],
+    "Pemba North": ["Wete", "Micheweni"],
+    "Pemba South": ["Chake Chake", "Mkoani"],
+    "Pwani": ["Kibaha Urban", "Kibaha Rural", "Bagamoyo", "Kisarawe", "Mafia", "Rufiji", "Mkuranga"],
+    "Rukwa": ["Sumbawanga Urban", "Sumbawanga Rural", "Kalambo", "Nkasi"],
+    "Ruvuma": ["Songea Urban", "Songea Rural", "Mbinga", "Namtumbo", "Nyasa", "Tunduru"],
+    "Shinyanga": ["Shinyanga Urban", "Shinyanga Rural", "Kahama", "Kishapu", "Ushetu"],
+    "Simiyu": ["Bariadi", "Busega", "Itilima", "Maswa", "Meatu"],
+    "Singida": ["Singida Urban", "Singida Rural", "Ikungi", "Manyoni", "Mkalama"],
+    "Songwe": ["Mbozi", "Ileje", "Momba", "Songwe"],
+    "Tabora": ["Tabora Urban", "Tabora Rural", "Igunga", "Kaliua", "Nzega", "Sikonge", "Urambo"],
+    "Tanga": ["Tanga City", "Tanga Rural", "Handeni", "Kilindi", "Korogwe", "Lushoto", "Mkinga", "Muheza", "Pangani"],
+    "Zanzibar North": ["Kaskazini 'A'", "Kaskazini 'B'"],
+    "Zanzibar South": ["Kusini", "Kati"],
+    "Zanzibar West": ["Magharibi", "Mjini"]
+
+            };
+
+            $.each(regions, function(region, districts) {
+                $('#region').append(new Option(region, region));
+            });
+
+            $('#region').change(function() {
+                let selectedRegion = $(this).val();
+                $('#district').empty();
+                $.each(regions[selectedRegion], function(index, district) {
+                    $('#district').append(new Option(district, district));
+                });
+            });
+        });
+    </script>
+</body>
+</html>
